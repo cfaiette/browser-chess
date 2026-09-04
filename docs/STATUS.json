@@ -7,24 +7,24 @@
   },
   "critic_scores": {
     "chess_rules": 8.0,
-    "board_pieces_visual": 7.0,
-    "interaction": 7.0,
+    "board_pieces_visual": 7.6,
+    "interaction": 7.2,
     "audio": 6.8,
     "ai": 7.2,
     "verification_harness": 7.5,
-    "overall": 7.4
+    "overall": 7.5
   },
   "pass_threshold": 8.5,
   "weakest_module": "audio",
   "failures": [
-    "Overall critic score 7.4 < 8.5 pass bar",
-    "Piece visuals still below luxury photography / AAA PBR bar",
+    "Overall critic score 7.5 < 8.5 pass bar",
+    "Still short of luxury photography / scanned Staunton PBR assets",
     "Audio is designed procedural palette, not sampled SFX pack",
     "Opening book is small; search still shallow (depth 2)",
     "GitHub push/PR blocked without gh auth"
   ],
   "open_issues": [
-    "Staunton mesh/PBR fidelity",
+    "Scanned/PBR Staunton meshes",
     "Larger opening book + deeper search",
     "Sampled sound pack",
     "Authenticate gh and publish real PR on cfaiette/browser-chess"

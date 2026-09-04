@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { ChessRules } from "./chess/rules.js";
 import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
@@ -11,11 +12,11 @@ import { showRestartOverlay } from "./ui/restartOverlay.js";
 
 const app = document.getElementById("app");
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0e1218);
-scene.fog = new THREE.Fog(0x0e1218, 18, 36);
+scene.background = new THREE.Color(0x0b0e13);
+scene.fog = new THREE.Fog(0x0b0e13, 16, 34);
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 10, 12);
+const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 9.5, 11.5);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -23,28 +24,39 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure = 1.2;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 app.appendChild(renderer.domElement);
 
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 0.4, 0);
+controls.target.set(0, 0.35, 0);
 controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI * 0.48;
 
-scene.add(new THREE.HemisphereLight(0xf5f0e6, 0x1a120c, 0.65));
-const key = new THREE.DirectionalLight(0xfff1dc, 1.35);
+scene.add(new THREE.HemisphereLight(0xf8f2e8, 0x1a120c, 0.45));
+const key = new THREE.DirectionalLight(0xfff1dc, 1.45);
 key.position.set(6, 12, 4);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
 key.shadow.bias = -0.0002;
 scene.add(key);
-const fill = new THREE.DirectionalLight(0xb8d0ff, 0.35);
+const fill = new THREE.DirectionalLight(0xb8d0ff, 0.4);
 fill.position.set(-7, 6, -4);
 scene.add(fill);
-const rim = new THREE.PointLight(0xffc9a1, 0.45, 30);
+const rim = new THREE.PointLight(0xffc9a1, 0.55, 30);
 rim.position.set(-2, 3, 6);
 scene.add(rim);
+
+const table = new THREE.Mesh(
+  new THREE.CylinderGeometry(7.2, 7.4, 0.35, 64),
+  new THREE.MeshStandardMaterial({ color: 0x1a1410, roughness: 0.75, metalness: 0.05 }),
+);
+table.position.y = -0.28;
+table.receiveShadow = true;
+scene.add(table);
 
 createBoard(scene);
 let game = new ChessRules();
@@ -155,9 +167,10 @@ function pickSquare(event) {
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
-  const hits = raycaster.intersectObjects([...pieces.children, ...highlights.children], false);
+  const hits = raycaster.intersectObjects([...pieces.children, ...highlights.children], true);
   if (!hits.length) return null;
-  const obj = hits[0].object;
+  let obj = hits[0].object;
+  while (obj && !obj.userData?.square && !obj.userData?.to && obj.parent) obj = obj.parent;
   if (obj.userData.to) return { kind: "move", ...obj.userData };
   if (obj.userData.square) return { kind: "piece", square: obj.userData.square };
   return null;
