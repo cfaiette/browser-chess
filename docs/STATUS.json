@@ -9,17 +9,17 @@
     "chess_rules": 8.0,
     "board_pieces_visual": 8.0,
     "interaction": 8.0,
-    "audio": 7.3,
+    "audio": 7.8,
     "ai": 7.5,
     "verification_harness": 8.4,
-    "overall": 8.0
+    "overall": 8.1
   },
   "pass_threshold": 8.5,
-  "weakest_module": "audio",
+  "weakest_module": "ai",
   "failures": [
-    "Overall critic score 8.0 < 8.5 pass bar",
+    "Overall critic score 8.1 < 8.5 pass bar",
     "Still short of scanned Staunton / photography-grade PBR assets",
-    "Audio is designed procedural buffers, not studio-sampled SFX pack",
+    "Audio is positional procedural design, not studio-sampled pack",
     "GitHub push/PR blocked: gh not logged in; SSH publickey denied"
   ],
   "open_issues": [

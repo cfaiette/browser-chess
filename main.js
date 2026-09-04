@@ -5,7 +5,7 @@ import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh } from "./pieces/index.js";
 import { createCamera } from "./camera/index.js";
-import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound } from "./audio/moveCaptureAudio.js";
+import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound, playMateSound } from "./audio/moveCaptureAudio.js";
 import { showPromotionUI } from "./ui/promotionUI.js";
 import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
 import { showRestartOverlay } from "./ui/restartOverlay.js";
@@ -148,11 +148,12 @@ function applyMove(from, to, promotion = "q") {
   if (!result.ok) return result;
   const isCastle = mover?.type === "k" && Math.abs(from.charCodeAt(0) - to.charCodeAt(0)) === 2;
   const isPromote = mover?.type === "p" && (to[1] === "8" || to[1] === "1");
-  if (before) playCaptureSound();
+  if (before) playCaptureSound(to);
   else if (isCastle) playCastleSound();
-  else if (isPromote) playPromoteSound();
-  else playMoveSound();
-  if (result.check || result.checkmate) playCheckSound();
+  else if (isPromote) playPromoteSound(to);
+  else playMoveSound(to);
+  if (result.checkmate) playMateSound();
+  else if (result.check) playCheckSound();
   clearHighlights();
   selected = null;
   if (movingMesh) {
