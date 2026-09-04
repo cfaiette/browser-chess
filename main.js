@@ -69,7 +69,7 @@ statusEl.style.cssText =
   "position:fixed;left:16px;bottom:16px;padding:10px 12px;background:#0f141bcc;color:#f4f1ea;font:14px/1.4 Georgia,serif;border:1px solid #334;border-radius:8px;z-index:5;";
 document.body.appendChild(statusEl);
 
-const vsAi = true;
+const vsAiFlag = { enabled: true };
 let selected = null;
 let busy = false;
 let anim = null;
@@ -138,7 +138,7 @@ function finishAfterMove(result) {
   } else if (result.stalemate) {
     showGameOverOverlay("Stalemate");
     showRestartOverlay(() => restart());
-  } else if (vsAi && game.turn === "black") {
+  } else if (vsAiFlag.enabled && game.turn === "black") {
     window.setTimeout(runAi, 280);
   }
 }
@@ -238,7 +238,7 @@ window.addEventListener("pointerdown", (event) => {
     finish("q");
     return;
   }
-  if (vsAi && game.turn === "black") return;
+  if (vsAiFlag.enabled && game.turn === "black") return;
   const piece = game.getPiece(hit.square);
   if (!piece || piece.color !== game.turn) return;
   selected = hit.square;
@@ -276,3 +276,12 @@ animate();
 window.__chess = () => game;
 window.__chessSync = () => syncPieces();
 window.__applyMove = (from, to, promotion = "q") => applyMove(from, to, promotion);
+window.__setVsAi = (enabled) => {
+  vsAiFlag.enabled = Boolean(enabled);
+};
+window.__setCamera = (x, y, z, tx = 0, ty = 0.35, tz = 0) => {
+  camera.position.set(x, y, z);
+  controls.target.set(tx, ty, tz);
+  controls.update();
+  renderer.render(scene, camera);
+};

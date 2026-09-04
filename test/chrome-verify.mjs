@@ -1,5 +1,4 @@
 import { chromium } from "playwright";
-import { spawn } from "child_process";
 import { createServer } from "http";
 import { mkdirSync, writeFileSync, existsSync, readFileSync, statSync } from "fs";
 import { resolve, extname, join } from "path";
@@ -40,6 +39,12 @@ function serveDist() {
   });
 }
 
+async function shot(page, name, report) {
+  const path = resolve(outDir, `${name}.png`);
+  await page.screenshot({ path, fullPage: true });
+  report.shots.push({ name, path: `docs/screenshots/${name}.png` });
+}
+
 const report = {
   ok: false,
   startedAt: new Date().toISOString(),
@@ -60,11 +65,7 @@ try {
   page.setDefaultTimeout(20000);
   await page.goto(base, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => typeof window.__chess === "function", null, { timeout: 20000 });
-  await page.waitForTimeout(1000);
-
-  const startShot = resolve(outDir, "start-position.png");
-  await page.screenshot({ path: startShot, fullPage: true });
-  report.shots.push({ name: "start-position", path: "docs/screenshots/start-position.png" });
+  await page.waitForTimeout(900);
 
   const canvas = await page.locator("canvas").count();
   const pieceCount = await page.evaluate(() => {
@@ -73,27 +74,42 @@ try {
     for (const row of game.board) for (const p of row) if (p) n += 1;
     return n;
   });
-  const fen = await page.evaluate(() => window.__chess().fen());
+  report.checks.canvasPresent = canvas >= 1;
+  report.checks.startingPieceCount = pieceCount;
+  report.checks.fen = await page.evaluate(() => window.__chess().fen());
 
-  report.checks = {
-    canvasPresent: canvas >= 1,
-    startingPieceCount: pieceCount,
-    fen,
-  };
+  await shot(page, "start-position", report);
 
+  await page.evaluate(() => window.__setCamera(10, 6, 10));
+  await page.waitForTimeout(200);
+  await shot(page, "angle-corner", report);
+
+  await page.evaluate(() => window.__setCamera(0, 14, 0.01));
+  await page.waitForTimeout(200);
+  await shot(page, "angle-top", report);
+
+  await page.evaluate(() => window.__setVsAi(false));
+  await page.evaluate(() => window.__setCamera(0, 9.5, 11.5));
   const moved = await page.evaluate(() => window.__applyMove("e2", "e4"));
   report.checks.e2e4 = moved;
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(450);
+  await shot(page, "after-e2e4", report);
 
-  const afterShot = resolve(outDir, "after-e2e4.png");
-  await page.screenshot({ path: afterShot, fullPage: true });
-  report.shots.push({ name: "after-e2e4", path: "docs/screenshots/after-e2e4.png" });
+  const capture = await page.evaluate(() => {
+    const black = window.__applyMove("d7", "d5");
+    const white = window.__applyMove("e4", "d5");
+    return { black, white };
+  });
+  report.checks.captureExd5 = capture;
+  await page.waitForTimeout(500);
+  await shot(page, "after-capture", report);
 
   report.ok =
     report.checks.canvasPresent &&
     report.checks.startingPieceCount === 32 &&
     Boolean(moved?.ok) &&
-    report.shots.length === 2;
+    Boolean(capture?.white?.ok) &&
+    report.shots.length >= 5;
 
   await browser.close();
 } catch (err) {
@@ -103,7 +119,7 @@ try {
   report.finishedAt = new Date().toISOString();
   writeFileSync(reportPath, JSON.stringify(report, null, 2));
   console.log(report.ok ? "chrome verify ok" : "chrome verify failed");
-  console.log("wrote", reportPath);
+  console.log("wrote", reportPath, `(${report.shots.length} shots)`);
   if (report.errors.length) console.error(report.errors.join("\n"));
   if (!report.ok) process.exitCode = 1;
 }

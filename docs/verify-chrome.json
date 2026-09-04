@@ -1,14 +1,26 @@
 {
   "ok": true,
-  "startedAt": "2026-09-04T07:52:41.529Z",
+  "startedAt": "2026-09-04T07:55:32.134Z",
   "shots": [
     {
       "name": "start-position",
       "path": "docs/screenshots/start-position.png"
     },
     {
+      "name": "angle-corner",
+      "path": "docs/screenshots/angle-corner.png"
+    },
+    {
+      "name": "angle-top",
+      "path": "docs/screenshots/angle-top.png"
+    },
+    {
       "name": "after-e2e4",
       "path": "docs/screenshots/after-e2e4.png"
+    },
+    {
+      "name": "after-capture",
+      "path": "docs/screenshots/after-capture.png"
     }
   ],
   "checks": {
@@ -21,8 +33,24 @@
       "checkmate": false,
       "stalemate": false,
       "captured": false
+    },
+    "captureExd5": {
+      "black": {
+        "ok": true,
+        "check": false,
+        "checkmate": false,
+        "stalemate": false,
+        "captured": false
+      },
+      "white": {
+        "ok": true,
+        "check": false,
+        "checkmate": false,
+        "stalemate": false,
+        "captured": true
+      }
     }
   },
   "errors": [],
-  "finishedAt": "2026-09-04T07:53:05.644Z"
+  "finishedAt": "2026-09-04T07:56:19.622Z"
 }
