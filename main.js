@@ -72,8 +72,11 @@ document.body.appendChild(statusEl);
 const vsAi = true;
 let selected = null;
 let busy = false;
+let anim = null;
 const highlights = new THREE.Group();
 scene.add(highlights);
+const selection = new THREE.Group();
+scene.add(selection);
 
 function syncPieces() {
   pieces.clear();
@@ -94,14 +97,23 @@ function syncPieces() {
 
 function clearHighlights() {
   highlights.clear();
+  selection.clear();
 }
 
 function showMoves(from) {
   clearHighlights();
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.38, 0.48, 32),
+    new THREE.MeshBasicMaterial({ color: 0xf0d78c, transparent: true, opacity: 0.85, side: THREE.DoubleSide }),
+  );
+  const fromPos = squareToWorld(from);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.set(fromPos.x, 0.16, fromPos.z);
+  selection.add(ring);
   for (const to of game.legalMoves(from)) {
     const marker = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.18, 0.18, 0.04, 24),
-      new THREE.MeshBasicMaterial({ color: 0x7dd3a7, transparent: true, opacity: 0.7 }),
+      new THREE.CylinderGeometry(0.16, 0.16, 0.035, 24),
+      new THREE.MeshBasicMaterial({ color: 0x7dd3a7, transparent: true, opacity: 0.72 }),
     );
     const pos = squareToWorld(to);
     marker.position.set(pos.x, 0.14, pos.z);
@@ -117,9 +129,26 @@ function needsPromotion(from, to) {
   return rank === 8 || rank === 1;
 }
 
+function finishAfterMove(result) {
+  syncPieces();
+  busy = false;
+  if (result.checkmate) {
+    showGameOverOverlay(`Checkmate — ${game.turn === "white" ? "black" : "white"} wins`);
+    showRestartOverlay(() => restart());
+  } else if (result.stalemate) {
+    showGameOverOverlay("Stalemate");
+    showRestartOverlay(() => restart());
+  } else if (vsAi && game.turn === "black") {
+    window.setTimeout(runAi, 280);
+  }
+}
+
 function applyMove(from, to, promotion = "q") {
   const before = game.getPiece(to);
   const mover = game.getPiece(from);
+  const movingMesh = pieces.children.find((child) => child.userData.square === from);
+  const fromPos = squareToWorld(from);
+  const toPos = squareToWorld(to);
   const result = game.move(from, to, promotion);
   if (!result.ok) return result;
   const isCastle = mover?.type === "k" && Math.abs(from.charCodeAt(0) - to.charCodeAt(0)) === 2;
@@ -129,15 +158,22 @@ function applyMove(from, to, promotion = "q") {
   else if (isPromote) playPromoteSound();
   else playMoveSound();
   if (result.check || result.checkmate) playCheckSound();
-  syncPieces();
-  if (result.checkmate) {
-    showGameOverOverlay(`Checkmate — ${game.turn === "white" ? "black" : "white"} wins`);
-    showRestartOverlay(() => restart());
-  } else if (result.stalemate) {
-    showGameOverOverlay("Stalemate");
-    showRestartOverlay(() => restart());
-  } else if (vsAi && game.turn === "black") {
-    window.setTimeout(runAi, 250);
+  clearHighlights();
+  selected = null;
+  if (movingMesh) {
+    busy = true;
+    anim = {
+      mesh: movingMesh,
+      x0: fromPos.x,
+      z0: fromPos.z,
+      x1: toPos.x,
+      z1: toPos.z,
+      t: 0,
+      dur: 0.22,
+      after: () => finishAfterMove(result),
+    };
+  } else {
+    finishAfterMove(result);
   }
   return { ...result, captured: Boolean(before) };
 }
@@ -219,6 +255,19 @@ syncPieces();
 
 function animate() {
   requestAnimationFrame(animate);
+  if (anim) {
+    anim.t += 1 / 60;
+    const u = Math.min(1, anim.t / anim.dur);
+    const e = 1 - (1 - u) ** 3;
+    anim.mesh.position.x = anim.x0 + (anim.x1 - anim.x0) * e;
+    anim.mesh.position.z = anim.z0 + (anim.z1 - anim.z0) * e;
+    anim.mesh.position.y = 0.06 + Math.sin(Math.PI * e) * 0.35;
+    if (u >= 1) {
+      const done = anim.after;
+      anim = null;
+      done();
+    }
+  }
   controls.update();
   renderer.render(scene, camera);
 }
