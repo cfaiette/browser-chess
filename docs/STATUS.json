@@ -3,7 +3,7 @@
     "SF-0003": "pr_ready_mock_only",
     "SF-0004": "blocked_review_repair_limit",
     "SF-0005": "blocked_review_repair_limit",
-    "SF-0006": "repair_failed_readme_landed_manually"
+    "SF-0006": "pr_ready"
   },
   "critic_scores": {
     "chess_rules": 8.0,
@@ -17,11 +17,9 @@
   "pass_threshold": 8.5,
   "weakest_module": "audio",
   "failures": [
-    "GitHub push/PR blocked until GITHUB_TOKEN or gh auth is available",
     "Audio is designed procedural+ambience (no studio-sampled pack); meets 8.5 with nits"
   ],
   "open_issues": [
-    "Paste PAT in Factory Settings (http://127.0.0.1:4173/settings) or run gh auth login",
     "Optional: replace procedural SFX with sampled pack"
   ],
   "module_fan_out": {
@@ -40,11 +38,11 @@
     "shots": 6,
     "report": "docs/verify-chrome.json"
   },
-  "auth_blockers": {
-    "gh": "not logged in",
-    "ssh": "Permission denied (publickey)",
-    "factory_settings": "github_token_set=false — paste PAT at /settings",
-    "pr_draft": "docs/PR_DRAFT.md",
-    "audit": "docs/OBJECTIVE_AUDIT.md"
+  "pull_request": {
+    "url": "https://github.com/cfaiette/browser-chess/pull/1",
+    "number": 1,
+    "head": "factory/SF-0006/integration",
+    "base": "main",
+    "stub": false
   }
 }
