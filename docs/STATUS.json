@@ -1,1 +1,35 @@
-{"packet_progress":{"SF-0003":"pr_ready_mock_only","SF-0004":"blocked_review_repair_limit","SF-0005":"blocked_review_repair_limit"},"critic_scores":{"chess_rules":8.0,"board_pieces_visual":6.5,"interaction":7.0,"audio":4.0,"ai":5.0,"verification_harness":5.0,"overall":6.5},"pass_threshold":8.5,"weakest_module":"audio","failures":["Overall critic score 6.5 < 8.5 pass bar","Piece visuals still below luxury photography / AAA bar","Audio is simple oscillators, not designed SFX","AI is random-legal only","No headless Chrome screenshot gauntlet yet","GitHub push/PR blocked without gh auth"],"open_issues":["Staunton mesh/PBR fidelity","Stronger AI + opening book","Designed sound pack","Headless Chrome PNG+JSON verifier","Authenticate gh and publish real PR on cfaiette/browser-chess"]}
+{
+  "packet_progress": {
+    "SF-0003": "pr_ready_mock_only",
+    "SF-0004": "blocked_review_repair_limit",
+    "SF-0005": "blocked_review_repair_limit",
+    "SF-0006": "repair_failed_readme_landed_manually"
+  },
+  "critic_scores": {
+    "chess_rules": 8.0,
+    "board_pieces_visual": 7.0,
+    "interaction": 7.0,
+    "audio": 6.0,
+    "ai": 6.5,
+    "verification_harness": 5.0,
+    "overall": 7.0
+  },
+  "pass_threshold": 8.5,
+  "weakest_module": "verification_harness",
+  "failures": [
+    "Overall critic score 7.0 < 8.5 pass bar",
+    "Piece visuals still below luxury photography / AAA PBR bar",
+    "Audio is richer procedural SFX, not a designed sound pack",
+    "AI is depth-2 material search without opening book / endgame table",
+    "No headless Chrome screenshot gauntlet yet (no Chromium in env)",
+    "GitHub push/PR blocked without gh auth"
+  ],
+  "open_issues": [
+    "Staunton mesh/PBR fidelity",
+    "Opening book + deeper search",
+    "Designed sound pack / samples",
+    "Headless Chrome PNG+JSON verifier",
+    "Authenticate gh and publish real PR on cfaiette/browser-chess"
+  ],
+  "recent_quality_delta": "layered move/capture/check audio; depth-2 AI with capture preference; ACES lighting + piece silhouette details; AI unit test"
+}

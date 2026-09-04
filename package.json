@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node test/chessRules.test.js"
+    "test": "node test/chessRules.test.js && node test/ai.test.js"
   },
   "dependencies": {
     "three": "^0.170.0"

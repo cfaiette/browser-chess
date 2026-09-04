@@ -4,14 +4,15 @@ import { ChessRules } from "./chess/rules.js";
 import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh } from "./pieces/index.js";
-import { playMoveSound } from "./audio/moveCaptureAudio.js";
+import { playMoveSound, playCaptureSound, playCheckSound } from "./audio/moveCaptureAudio.js";
 import { showPromotionUI } from "./ui/promotionUI.js";
 import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
 import { showRestartOverlay } from "./ui/restartOverlay.js";
 
 const app = document.getElementById("app");
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x12161c);
+scene.background = new THREE.Color(0x0e1218);
+scene.fog = new THREE.Fog(0x0e1218, 18, 36);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.set(0, 10, 12);
@@ -20,6 +21,10 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 app.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -27,12 +32,19 @@ controls.target.set(0, 0.4, 0);
 controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI * 0.48;
 
-scene.add(new THREE.HemisphereLight(0xf0f4ff, 0x2a1d14, 0.55));
-const key = new THREE.DirectionalLight(0xfff2dd, 1.15);
+scene.add(new THREE.HemisphereLight(0xf5f0e6, 0x1a120c, 0.65));
+const key = new THREE.DirectionalLight(0xfff1dc, 1.35);
 key.position.set(6, 12, 4);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
+key.shadow.bias = -0.0002;
 scene.add(key);
+const fill = new THREE.DirectionalLight(0xb8d0ff, 0.35);
+fill.position.set(-7, 6, -4);
+scene.add(fill);
+const rim = new THREE.PointLight(0xffc9a1, 0.45, 30);
+rim.position.set(-2, 3, 6);
+scene.add(rim);
 
 createBoard(scene);
 let game = new ChessRules();
@@ -97,7 +109,9 @@ function applyMove(from, to, promotion = "q") {
   const before = game.getPiece(to);
   const result = game.move(from, to, promotion);
   if (!result.ok) return result;
-  playMoveSound();
+  if (before) playCaptureSound();
+  else playMoveSound();
+  if (result.check || result.checkmate) playCheckSound();
   syncPieces();
   if (result.checkmate) {
     showGameOverOverlay(`Checkmate — ${game.turn === "white" ? "black" : "white"} wins`);

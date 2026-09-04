@@ -4,14 +4,14 @@ export function createBoard(scene) {
   const root = new THREE.Group();
   root.name = "board";
   const lightMat = new THREE.MeshStandardMaterial({
-    color: 0xd6c2a0,
-    roughness: 0.45,
-    metalness: 0.05,
+    color: 0xe2d0b2,
+    roughness: 0.38,
+    metalness: 0.08,
   });
   const darkMat = new THREE.MeshStandardMaterial({
-    color: 0x5b3a29,
-    roughness: 0.55,
-    metalness: 0.08,
+    color: 0x4a2f22,
+    roughness: 0.48,
+    metalness: 0.12,
   });
   for (let rank = 0; rank < 8; rank += 1) {
     for (let file = 0; file < 8; file += 1) {
