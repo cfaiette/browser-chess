@@ -1,0 +1,24 @@
+{
+  "name": "browser-chess",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ./node_modules/vite/bin/vite.js",
+    "build": "node ./node_modules/vite/bin/vite.js build",
+    "preview": "node ./node_modules/vite/bin/vite.js preview",
+    "test": "node test/chessRules.test.js && node test/ai.test.js && node test/audio.test.js && node test/moduleApi.test.js",
+    "verify:chrome": "npm run build && node test/chrome-verify.mjs"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.1.1",
+    "@gltf-transform/extensions": "^4.1.1",
+    "@gltf-transform/functions": "^4.1.1",
+    "meshoptimizer": "^1.2.0",
+    "playwright": "^1.49.1",
+    "vite": "^6.0.0"
+  }
+}

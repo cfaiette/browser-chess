@@ -1,0 +1,63 @@
+{
+  "ok": true,
+  "startedAt": "2026-09-04T09:06:13.034Z",
+  "shots": [
+    {
+      "name": "start-position",
+      "path": "docs/screenshots/start-position.png"
+    },
+    {
+      "name": "angle-corner",
+      "path": "docs/screenshots/angle-corner.png"
+    },
+    {
+      "name": "angle-top",
+      "path": "docs/screenshots/angle-top.png"
+    },
+    {
+      "name": "camera-flip",
+      "path": "docs/screenshots/camera-flip.png"
+    },
+    {
+      "name": "after-e2e4",
+      "path": "docs/screenshots/after-e2e4.png"
+    },
+    {
+      "name": "after-capture",
+      "path": "docs/screenshots/after-capture.png"
+    }
+  ],
+  "checks": {
+    "canvasPresent": true,
+    "startingPieceCount": 32,
+    "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    "fps": 2,
+    "e2e4": {
+      "ok": true,
+      "check": false,
+      "checkmate": false,
+      "stalemate": false,
+      "captured": false
+    },
+    "captureExd5": {
+      "black": {
+        "ok": true,
+        "check": false,
+        "checkmate": false,
+        "stalemate": false,
+        "captured": false
+      },
+      "white": {
+        "ok": true,
+        "check": false,
+        "checkmate": false,
+        "stalemate": false,
+        "captured": true
+      }
+    },
+    "consoleErrors": [],
+    "headlessNote": "FPS in headless Chromium is not comparable to interactive 60fps target"
+  },
+  "errors": [],
+  "finishedAt": "2026-09-04T09:08:17.206Z"
+}

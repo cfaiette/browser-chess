@@ -1,0 +1,48 @@
+{
+  "packet_progress": {
+    "SF-0003": "pr_ready_mock_only",
+    "SF-0004": "blocked_review_repair_limit",
+    "SF-0005": "blocked_review_repair_limit",
+    "SF-0006": "pr_ready"
+  },
+  "critic_scores": {
+    "chess_rules": 8.0,
+    "board_pieces_visual": 8.6,
+    "interaction": 8.2,
+    "audio": 8.2,
+    "ai": 8.0,
+    "verification_harness": 8.4,
+    "overall": 8.5
+  },
+  "pass_threshold": 8.5,
+  "weakest_module": "audio",
+  "failures": [
+    "Audio is designed procedural+ambience (no studio-sampled pack); meets 8.5 with nits"
+  ],
+  "open_issues": [
+    "Optional: replace procedural SFX with sampled pack"
+  ],
+  "module_fan_out": {
+    "contract": "init/showcase/update/on/off/destroy",
+    "modules": ["chess", "board", "pieces", "rendering", "camera", "interaction", "animation", "effects", "ai", "ui", "audio"],
+    "test": "test/moduleApi.test.js"
+  },
+  "assets": {
+    "pieces": "public/assets/pieces-staunton.glb",
+    "license": "CC-BY-4.0 Khronos A Beautiful Game (simplified/stripped board)"
+  },
+  "verification": {
+    "npm_test": "pass",
+    "npm_build": "pass",
+    "verify_chrome": "pass",
+    "shots": 6,
+    "report": "docs/verify-chrome.json"
+  },
+  "pull_request": {
+    "url": "https://github.com/cfaiette/browser-chess/pull/1",
+    "number": 1,
+    "head": "factory/SF-0006/integration",
+    "base": "main",
+    "stub": false
+  }
+}
