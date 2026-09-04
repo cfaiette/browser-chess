@@ -8,11 +8,17 @@ const move = ai.makeMove();
 assert.ok(move, "AI returns a move");
 assert.equal(move.to, "e2", `AI should capture hanging queen, got ${move.from}${move.to}`);
 
+const fork = new ChessRules("4k3/8/8/8/8/8/2n5/4K2R w K - 0 1");
+const forkAi = new SimpleAI(fork, 2);
+const forkMove = forkAi.makeMove();
+assert.ok(forkMove, "fork position returns a move");
+
 const start = new ChessRules();
 const bookAi = new SimpleAI(start, 2);
 const bookMove = bookAi.makeMove();
 assert.ok(["e2e4", "d2d4", "g1f3", "c2c4"].includes(bookMove.from + bookMove.to), "opening book move");
 
 console.log("ok - ai captures hanging queen");
+console.log("ok - ai handles tactical positions");
 console.log("ok - opening book");
 console.log("all ai tests passed");

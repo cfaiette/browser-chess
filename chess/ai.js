@@ -91,6 +91,8 @@ function materialScore(chess) {
       score += piece.color === "white" ? value : -value;
     }
   }
+  const mobility = chess.allLegalMoves().length;
+  score += chess.turn === "white" ? mobility * 2 : -mobility * 2;
   if (chess.isCheckmate()) {
     score += chess.turn === "white" ? -10000 : 10000;
   } else if (chess.inCheck()) {
@@ -120,9 +122,44 @@ function openingMove(chess) {
   return { from: pick.slice(0, 2), to: pick.slice(2, 4) };
 }
 
+function quietCaptures(chess) {
+  return orderMoves(
+    chess,
+    chess.allLegalMoves().filter((m) => Boolean(chess.getPiece(m.to))),
+  );
+}
+
+function quiesce(chess, alpha, beta, maximizingWhite, ply) {
+  const stand = materialScore(chess);
+  if (ply <= 0) return stand;
+  if (maximizingWhite) {
+    if (stand >= beta) return beta;
+    alpha = Math.max(alpha, stand);
+  } else {
+    if (stand <= alpha) return alpha;
+    beta = Math.min(beta, stand);
+  }
+  for (const move of quietCaptures(chess)) {
+    const next = new ChessRules(chess.fen());
+    if (!next.move(move.from, move.to, "q").ok) continue;
+    const score = quiesce(next, alpha, beta, !maximizingWhite, ply - 1);
+    if (maximizingWhite) {
+      if (score >= beta) return beta;
+      alpha = Math.max(alpha, score);
+    } else {
+      if (score <= alpha) return alpha;
+      beta = Math.min(beta, score);
+    }
+  }
+  return maximizingWhite ? alpha : beta;
+}
+
 function minimax(chess, depth, alpha, beta, maximizingWhite) {
-  if (depth === 0 || chess.isCheckmate() || chess.isStalemate()) {
+  if (chess.isCheckmate() || chess.isStalemate()) {
     return { score: materialScore(chess), move: null };
+  }
+  if (depth === 0) {
+    return { score: quiesce(chess, alpha, beta, maximizingWhite, 2), move: null };
   }
   const moves = orderMoves(chess, chess.allLegalMoves());
   if (!moves.length) return { score: materialScore(chess), move: null };

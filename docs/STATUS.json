@@ -10,14 +10,14 @@
     "board_pieces_visual": 8.0,
     "interaction": 8.0,
     "audio": 7.8,
-    "ai": 7.5,
+    "ai": 8.0,
     "verification_harness": 8.4,
-    "overall": 8.1
+    "overall": 8.2
   },
   "pass_threshold": 8.5,
-  "weakest_module": "ai",
+  "weakest_module": "audio",
   "failures": [
-    "Overall critic score 8.1 < 8.5 pass bar",
+    "Overall critic score 8.2 < 8.5 pass bar",
     "Still short of scanned Staunton / photography-grade PBR assets",
     "Audio is positional procedural design, not studio-sampled pack",
     "GitHub push/PR blocked: gh not logged in; SSH publickey denied"
