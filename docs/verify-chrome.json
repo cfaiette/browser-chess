@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "startedAt": "2026-09-04T07:41:23.736Z",
+  "shots": [
+    {
+      "name": "start-position",
+      "path": "docs/screenshots/start-position.png"
+    },
+    {
+      "name": "after-e2e4",
+      "path": "docs/screenshots/after-e2e4.png"
+    }
+  ],
+  "checks": {
+    "canvasPresent": true,
+    "startingPieceCount": 32,
+    "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    "e2e4": {
+      "ok": true,
+      "check": false,
+      "checkmate": false,
+      "stalemate": false,
+      "captured": false
+    }
+  },
+  "errors": [],
+  "finishedAt": "2026-09-04T07:41:30.016Z"
+}

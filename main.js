@@ -207,3 +207,5 @@ function animate() {
 animate();
 
 window.__chess = () => game;
+window.__chessSync = () => syncPieces();
+window.__applyMove = (from, to, promotion = "q") => applyMove(from, to, promotion);

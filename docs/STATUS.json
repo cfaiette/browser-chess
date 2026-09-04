@@ -11,25 +11,29 @@
     "interaction": 7.0,
     "audio": 6.0,
     "ai": 6.5,
-    "verification_harness": 5.0,
-    "overall": 7.0
+    "verification_harness": 7.5,
+    "overall": 7.2
   },
   "pass_threshold": 8.5,
-  "weakest_module": "verification_harness",
+  "weakest_module": "audio",
   "failures": [
-    "Overall critic score 7.0 < 8.5 pass bar",
+    "Overall critic score 7.2 < 8.5 pass bar",
     "Piece visuals still below luxury photography / AAA PBR bar",
     "Audio is richer procedural SFX, not a designed sound pack",
-    "AI is depth-2 material search without opening book / endgame table",
-    "No headless Chrome screenshot gauntlet yet (no Chromium in env)",
+    "AI is depth-2 material search without opening book",
     "GitHub push/PR blocked without gh auth"
   ],
   "open_issues": [
     "Staunton mesh/PBR fidelity",
     "Opening book + deeper search",
     "Designed sound pack / samples",
-    "Headless Chrome PNG+JSON verifier",
     "Authenticate gh and publish real PR on cfaiette/browser-chess"
   ],
-  "recent_quality_delta": "layered move/capture/check audio; depth-2 AI with capture preference; ACES lighting + piece silhouette details; AI unit test"
+  "verification": {
+    "npm_test": "pass",
+    "npm_build": "pass",
+    "verify_chrome": "pass",
+    "report": "docs/verify-chrome.json",
+    "screenshots": ["docs/screenshots/start-position.png", "docs/screenshots/after-e2e4.png"]
+  }
 }
