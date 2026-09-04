@@ -1,11 +1,19 @@
-// Promotion UI component
+export function showPromotionUI(callback) {
+    const promotionDiv = document.createElement('div');
+    promotionDiv.id = 'promotionUI';
+    promotionDiv.style.position = 'absolute';
 
-export function promotePawn(fromSquare, toSquare, legalPromotions) {
-  // Render UI for pawn promotion
-  const promotionOptions = legalPromotions.map(type => `<button onclick="handlePromotion('${type}')">${type.toUpperCase()}</button>`);
-  document.getElementById('promotion-container').innerHTML = promotionOptions.join(' ');
-}
+    // Create promotion options
+    const pieces = ['Queen', 'Rook', 'Bishop', 'Knight'];
+    pieces.forEach(piece => {
+        const button = document.createElement('button');
+        button.innerText = piece;
+        button.onclick = () => {
+            callback(piece);
+            document.body.removeChild(promotionDiv);
+        };
+        promotionDiv.appendChild(button);
+    });
 
-function handlePromotion(type) {
-  // Handle the promotion logic
+    document.body.appendChild(promotionDiv);
 }

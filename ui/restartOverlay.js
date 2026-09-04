@@ -1,11 +1,11 @@
-// Restart Overlay Component
+export function showRestartOverlay(onRestart) {
+    const overlay = document.createElement('div');
+    overlay.id = 'restartOverlay';
+    overlay.innerHTML = '<h2>Game Over</h2><button id="restartBtn">Restart Game</button>';
+    document.body.appendChild(overlay);
 
-export function showRestartOverlay() {
-  const overlay = document.getElementById('restart-overlay');
-  overlay.style.display = 'block';
-  overlay.innerHTML = '<button onclick="restartGame()">Restart Game</button>';
-}
-
-function restartGame() {
-  // Logic to restart the game
+    document.getElementById('restartBtn').onclick = () => {
+        onRestart();
+        document.body.removeChild(overlay);
+    };
 }
