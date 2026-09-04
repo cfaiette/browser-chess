@@ -3,7 +3,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { ChessRules } from "./chess/rules.js";
 import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
-import { createPieceMesh } from "./pieces/index.js";
+import { createPieceMesh, loadPieceLibrary } from "./pieces/index.js";
 import { createCamera } from "./camera/index.js";
 import { createEffectsLayer } from "./effects/index.js";
 import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound, playMateSound } from "./audio/moveCaptureAudio.js";
@@ -309,3 +309,9 @@ window.__setCamera = (x, y, z, tx = 0, ty = 0.35, tz = 0) => {
   renderer.render(scene, camera);
 };
 window.__ready = true;
+
+loadPieceLibrary().then((lib) => {
+  window.__piecesReady = Boolean(lib);
+  if (lib) syncPieces();
+});
+window.__piecesReady = false;

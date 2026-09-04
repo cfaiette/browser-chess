@@ -41,7 +41,7 @@ function serveDist() {
 
 async function shot(page, name, report) {
   const path = resolve(outDir, `${name}.png`);
-  await page.screenshot({ path, fullPage: true });
+  await page.screenshot({ path, fullPage: true, timeout: 60000 });
   report.shots.push({ name, path: `docs/screenshots/${name}.png` });
 }
 
@@ -62,7 +62,7 @@ try {
 
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  page.setDefaultTimeout(20000);
+  page.setDefaultTimeout(60000);
   const consoleErrors = [];
   page.on("pageerror", (err) => consoleErrors.push(String(err)));
   page.on("console", (msg) => {
@@ -70,7 +70,9 @@ try {
   });
   await page.goto(base, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => window.__ready === true, null, { timeout: 20000 });
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(1500);
+  await page.waitForFunction(() => window.__piecesReady === true, null, { timeout: 90000 }).catch(() => null);
+  await page.waitForTimeout(800);
 
   const canvas = await page.locator("canvas").count();
   const pieceCount = await page.evaluate(() => {

@@ -39,3 +39,7 @@ npm run verify:chrome
 ## Architecture
 
 See `ARCHITECTURE.md` and `PRD`.
+
+## Credits
+
+Staunton pieces: simplified from Khronos [A Beautiful Game](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ABeautifulGame) (`public/assets/pieces-staunton.glb`, CC BY 4.0 — see `public/assets/LICENSE-ABeautifulGame.md`).

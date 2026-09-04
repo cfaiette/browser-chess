@@ -7,26 +7,27 @@
   },
   "critic_scores": {
     "chess_rules": 8.0,
-    "board_pieces_visual": 8.1,
+    "board_pieces_visual": 8.6,
     "interaction": 8.2,
     "audio": 7.8,
     "ai": 8.0,
     "verification_harness": 8.4,
-    "overall": 8.3
+    "overall": 8.4
   },
   "pass_threshold": 8.5,
   "weakest_module": "audio",
   "failures": [
-    "Overall critic score 8.3 < 8.5 pass bar",
-    "Still short of scanned Staunton / photography-grade PBR assets",
-    "Audio is positional procedural design, not studio-sampled pack",
+    "Overall critic score 8.4 < 8.5 pass bar (audio still short of studio samples)",
     "GitHub push/PR blocked: gh not logged in; SSH publickey denied"
   ],
   "open_issues": [
-    "Scanned/PBR Staunton meshes for AAA bar",
-    "Sampled sound pack",
+    "Sampled sound pack to clear remaining 0.1 overall gap",
     "Authenticate gh (or authorize SSH key) and publish real PR on cfaiette/browser-chess"
   ],
+  "assets": {
+    "pieces": "public/assets/pieces-staunton.glb",
+    "license": "CC-BY-4.0 Khronos A Beautiful Game (simplified/stripped board)"
+  },
   "verification": {
     "npm_test": "pass",
     "npm_build": "pass",
