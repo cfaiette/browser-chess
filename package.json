@@ -1,1 +1,18 @@
-{"name": "chess-game", "version": "1.0.0", "private": true, "scripts": {"dev": "vite", "build": "vite build", "serve": "vite preview"}, "dependencies": {"three": "latest", "vite": "latest"}}
+{
+  "name": "browser-chess",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node test/chessRules.test.js"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

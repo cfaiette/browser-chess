@@ -1,1 +1,33 @@
-{"critic_scores": [], "failures": [], "weakest_module": null, "open_issues": ["The cube needs to be replaced by a proper chessboard and pieces.", "Implement chess rules and interactions.", "Set up initial tests for chess rules module.", "Add documentation for new features.", "Ongoing functionality testing is required throughout development."]}
+{
+  "updated_at": "2026-09-04T07:10:00Z",
+  "packet_progress": {
+    "SF-0003": "pr_ready_mock_only",
+    "SF-0004": "blocked_review_repair_limit"
+  },
+  "critic_scores": {
+    "chess_rules": 7.5,
+    "board_pieces_visual": 6.0,
+    "interaction": 6.5,
+    "audio": 0,
+    "ai": 0,
+    "verification_harness": 3.0,
+    "overall": 5.5
+  },
+  "pass_threshold": 8.5,
+  "weakest_module": "audio",
+  "failures": [
+    "No AAA critic pass yet (overall 5.5 < 8.5)",
+    "Audio and AI modules are stubs",
+    "Headless Chrome screenshot harness not implemented",
+    "GitHub push blocked: no gh auth / SSH key not authorized",
+    "SF-0003 PR URL is factory:// mock"
+  ],
+  "open_issues": [
+    "Improve Staunton silhouette fidelity and PBR materials",
+    "Add promotion UI, flip board, restart, game-over screens",
+    "Implement AI opponent",
+    "Add sound design",
+    "Add headless verification tool writing PNG+JSON evidence",
+    "Authenticate gh and publish real PR"
+  ]
+}
