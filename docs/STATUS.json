@@ -17,11 +17,11 @@
   "pass_threshold": 8.5,
   "weakest_module": "audio",
   "failures": [
-    "GitHub push/PR blocked: gh not logged in; SSH publickey denied",
-    "Audio is designed procedural+ambience (no studio-sampled pack); still meets 8.5 ship bar with nits"
+    "GitHub push/PR blocked until GITHUB_TOKEN or gh auth is available",
+    "Audio is designed procedural+ambience (no studio-sampled pack); meets 8.5 with nits"
   ],
   "open_issues": [
-    "Authenticate gh (or authorize SSH key) and publish real PR on cfaiette/browser-chess",
+    "Paste PAT in Factory Settings (http://127.0.0.1:4173/settings) or run gh auth login",
     "Optional: replace procedural SFX with sampled pack"
   ],
   "assets": {
@@ -37,6 +37,9 @@
   },
   "auth_blockers": {
     "gh": "not logged in",
-    "ssh": "Permission denied (publickey)"
+    "ssh": "Permission denied (publickey)",
+    "factory_settings": "github_token_set=false — paste PAT at /settings",
+    "pr_draft": "docs/PR_DRAFT.md",
+    "audit": "docs/OBJECTIVE_AUDIT.md"
   }
 }
