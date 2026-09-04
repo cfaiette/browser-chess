@@ -1,1 +1,1 @@
-{"name": "chess-game","version": "1.0.0","private": true,"scripts": {"dev": "vite","build": "vite build","serve": "vite preview"},"dependencies": {"three": "latest","vite": "latest"}}
+{ "name": "chess-game", "version": "1.0.0", "private": true, "scripts": { "dev": "vite", "build": "vite build", "serve": "vite preview" }, "dependencies": { "three": "latest", "vite": "latest" } }
