@@ -9,22 +9,22 @@
     "chess_rules": 8.0,
     "board_pieces_visual": 7.6,
     "interaction": 7.8,
-    "audio": 6.8,
+    "audio": 7.3,
     "ai": 7.5,
     "verification_harness": 7.5,
-    "overall": 7.6
+    "overall": 7.7
   },
   "pass_threshold": 8.5,
-  "weakest_module": "audio",
+  "weakest_module": "board_pieces_visual",
   "failures": [
-    "Overall critic score 7.6 < 8.5 pass bar",
+    "Overall critic score 7.7 < 8.5 pass bar",
     "Still short of luxury photography / scanned Staunton PBR assets",
-    "Audio is designed procedural palette, not sampled SFX pack",
+    "Audio is designed procedural buffers, not studio-sampled SFX pack",
     "GitHub push/PR blocked: gh not logged in; SSH publickey denied"
   ],
   "open_issues": [
     "Scanned/PBR Staunton meshes",
-    "Sampled sound pack",
+    "Sampled sound pack (optional polish)",
     "Authenticate gh (or authorize SSH key) and publish real PR on cfaiette/browser-chess"
   ],
   "verification": {

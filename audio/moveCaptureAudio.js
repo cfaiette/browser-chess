@@ -8,86 +8,101 @@ function ctx() {
   return sharedCtx;
 }
 
-function tone(frequency, duration, type = "sine", gain = 0.06, when = 0, dest = null) {
-  const audio = ctx();
-  if (!audio) return;
-  const t0 = audio.currentTime + when;
-  const osc = audio.createOscillator();
-  const g = audio.createGain();
-  osc.type = type;
-  osc.frequency.setValueAtTime(frequency, t0);
-  g.gain.setValueAtTime(Math.max(gain, 0.0001), t0);
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
-  osc.connect(g);
-  g.connect(dest || audio.destination);
-  osc.start(t0);
-  osc.stop(t0 + duration + 0.02);
+export function renderWoodClick(sampleRate, opts = {}) {
+  const duration = opts.duration ?? 0.09;
+  const frames = Math.floor(sampleRate * duration);
+  const data = new Float32Array(frames);
+  const bright = opts.bright ?? 1800;
+  for (let i = 0; i < frames; i += 1) {
+    const t = i / sampleRate;
+    const env = Math.exp(-t * 55) * (1 - t / duration);
+    const click = Math.sin(2 * Math.PI * bright * t) * env * 0.35;
+    const body = Math.sin(2 * Math.PI * 220 * t) * Math.exp(-t * 28) * 0.2;
+    const noise = (Math.random() * 2 - 1) * Math.exp(-t * 90) * 0.12;
+    data[i] = click + body + noise;
+  }
+  return data;
 }
 
-function noiseBurst(duration, gain = 0.04, centerHz = 900, dest = null) {
+export function renderThud(sampleRate, opts = {}) {
+  const duration = opts.duration ?? 0.18;
+  const frames = Math.floor(sampleRate * duration);
+  const data = new Float32Array(frames);
+  for (let i = 0; i < frames; i += 1) {
+    const t = i / sampleRate;
+    const env = Math.exp(-t * 18);
+    const low = Math.sin(2 * Math.PI * 90 * t) * env * 0.45;
+    const mid = Math.sin(2 * Math.PI * 180 * t) * Math.exp(-t * 25) * 0.2;
+    const grit = (Math.random() * 2 - 1) * Math.exp(-t * 40) * 0.18;
+    data[i] = low + mid + grit;
+  }
+  return data;
+}
+
+export function renderChime(sampleRate, freqs, opts = {}) {
+  const duration = opts.duration ?? 0.28;
+  const frames = Math.floor(sampleRate * duration);
+  const data = new Float32Array(frames);
+  for (let i = 0; i < frames; i += 1) {
+    const t = i / sampleRate;
+    let sample = 0;
+    freqs.forEach((f, idx) => {
+      const delay = idx * 0.05;
+      if (t < delay) return;
+      const u = t - delay;
+      sample += Math.sin(2 * Math.PI * f * u) * Math.exp(-u * 7) * (0.22 - idx * 0.03);
+    });
+    data[i] = sample;
+  }
+  return data;
+}
+
+function playBuffer(data, gain = 0.7) {
   const audio = ctx();
   if (!audio) return;
-  const frames = Math.floor(audio.sampleRate * duration);
-  const buffer = audio.createBuffer(1, frames, audio.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < frames; i += 1) {
-    data[i] = (Math.random() * 2 - 1) * (1 - i / frames);
-  }
+  const buffer = audio.createBuffer(1, data.length, audio.sampleRate);
+  buffer.copyToChannel(data, 0);
   const src = audio.createBufferSource();
   const g = audio.createGain();
   const filter = audio.createBiquadFilter();
-  filter.type = "bandpass";
-  filter.frequency.value = centerHz;
-  filter.Q.value = 0.85;
+  filter.type = "lowpass";
+  filter.frequency.value = 5200;
   src.buffer = buffer;
   g.gain.value = gain;
   src.connect(filter);
   filter.connect(g);
-  g.connect(dest || audio.destination);
+  g.connect(audio.destination);
   src.start();
 }
 
-function bus() {
-  const audio = ctx();
-  if (!audio) return null;
-  const g = audio.createGain();
-  g.gain.value = 0.9;
-  g.connect(audio.destination);
-  return g;
-}
-
 export function playMoveSound() {
-  const out = bus();
-  noiseBurst(0.04, 0.028, 1800, out);
-  tone(380, 0.05, "triangle", 0.04, 0, out);
-  tone(610, 0.08, "sine", 0.02, 0.025, out);
+  const audio = ctx();
+  if (!audio) return;
+  playBuffer(renderWoodClick(audio.sampleRate, { bright: 1650 }), 0.65);
 }
 
 export function playCaptureSound() {
-  const out = bus();
-  noiseBurst(0.14, 0.055, 650, out);
-  tone(210, 0.12, "square", 0.03, 0, out);
-  tone(130, 0.16, "sawtooth", 0.018, 0.03, out);
-  tone(90, 0.2, "sine", 0.015, 0.05, out);
+  const audio = ctx();
+  if (!audio) return;
+  playBuffer(renderThud(audio.sampleRate), 0.75);
+  playBuffer(renderWoodClick(audio.sampleRate, { bright: 900, duration: 0.07 }), 0.35);
 }
 
 export function playCheckSound() {
-  const out = bus();
-  tone(494, 0.07, "sine", 0.035, 0, out);
-  tone(740, 0.1, "triangle", 0.03, 0.07, out);
-  tone(988, 0.12, "sine", 0.022, 0.14, out);
+  const audio = ctx();
+  if (!audio) return;
+  playBuffer(renderChime(audio.sampleRate, [523.25, 659.25, 783.99]), 0.55);
 }
 
 export function playCastleSound() {
-  const out = bus();
-  playMoveSound();
-  tone(290, 0.06, "triangle", 0.03, 0.08, out);
-  tone(440, 0.08, "sine", 0.02, 0.12, out);
+  const audio = ctx();
+  if (!audio) return;
+  playBuffer(renderWoodClick(audio.sampleRate, { bright: 1400 }), 0.5);
+  setTimeout(() => playBuffer(renderWoodClick(audio.sampleRate, { bright: 1200 }), 0.45), 70);
 }
 
 export function playPromoteSound() {
-  const out = bus();
-  tone(523, 0.08, "sine", 0.035, 0, out);
-  tone(659, 0.09, "triangle", 0.03, 0.07, out);
-  tone(784, 0.12, "sine", 0.028, 0.14, out);
+  const audio = ctx();
+  if (!audio) return;
+  playBuffer(renderChime(audio.sampleRate, [392, 523.25, 659.25, 783.99], { duration: 0.4 }), 0.6);
 }
