@@ -1,8 +1,13 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ChessRules } from "./chess/rules.js";
+import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh } from "./pieces/index.js";
+import { playMoveSound } from "./audio/moveCaptureAudio.js";
+import { showPromotionUI } from "./ui/promotionUI.js";
+import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
+import { showRestartOverlay } from "./ui/restartOverlay.js";
 
 const app = document.getElementById("app");
 const scene = new THREE.Scene();
@@ -22,8 +27,7 @@ controls.target.set(0, 0.4, 0);
 controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI * 0.48;
 
-const hemi = new THREE.HemisphereLight(0xf0f4ff, 0x2a1d14, 0.55);
-scene.add(hemi);
+scene.add(new THREE.HemisphereLight(0xf0f4ff, 0x2a1d14, 0.55));
 const key = new THREE.DirectionalLight(0xfff2dd, 1.15);
 key.position.set(6, 12, 4);
 key.castShadow = true;
@@ -31,16 +35,19 @@ key.shadow.mapSize.set(2048, 2048);
 scene.add(key);
 
 createBoard(scene);
-const game = new ChessRules();
+let game = new ChessRules();
+const ai = new SimpleAI(game);
 const pieces = new THREE.Group();
 scene.add(pieces);
 
 const statusEl = document.createElement("div");
 statusEl.style.cssText =
-  "position:fixed;left:16px;bottom:16px;padding:10px 12px;background:#0f141bcc;color:#f4f1ea;font:14px/1.4 Georgia,serif;border:1px solid #334;border-radius:8px;";
+  "position:fixed;left:16px;bottom:16px;padding:10px 12px;background:#0f141bcc;color:#f4f1ea;font:14px/1.4 Georgia,serif;border:1px solid #334;border-radius:8px;z-index:5;";
 document.body.appendChild(statusEl);
 
+const vsAi = true;
 let selected = null;
+let busy = false;
 const highlights = new THREE.Group();
 scene.add(highlights);
 
@@ -79,6 +86,49 @@ function showMoves(from) {
   }
 }
 
+function needsPromotion(from, to) {
+  const piece = game.getPiece(from);
+  if (!piece || piece.type !== "p") return false;
+  const rank = Number(to[1]);
+  return rank === 8 || rank === 1;
+}
+
+function applyMove(from, to, promotion = "q") {
+  const before = game.getPiece(to);
+  const result = game.move(from, to, promotion);
+  if (!result.ok) return result;
+  playMoveSound();
+  syncPieces();
+  if (result.checkmate) {
+    showGameOverOverlay(`Checkmate — ${game.turn === "white" ? "black" : "white"} wins`);
+    showRestartOverlay(() => restart());
+  } else if (result.stalemate) {
+    showGameOverOverlay("Stalemate");
+    showRestartOverlay(() => restart());
+  } else if (vsAi && game.turn === "black") {
+    window.setTimeout(runAi, 250);
+  }
+  return { ...result, captured: Boolean(before) };
+}
+
+function runAi() {
+  if (busy || game.turn !== "black") return;
+  const move = ai.makeMove();
+  if (!move) return;
+  applyMove(move.from, move.to, "q");
+}
+
+function restart() {
+  ["gameOverOverlay", "promotionUI", "restartOverlay"].forEach((id) => {
+    document.getElementById(id)?.remove();
+  });
+  game = new ChessRules();
+  ai.chess = game;
+  selected = null;
+  clearHighlights();
+  syncPieces();
+}
+
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
@@ -95,6 +145,7 @@ function pickSquare(event) {
 }
 
 window.addEventListener("pointerdown", (event) => {
+  if (busy) return;
   const hit = pickSquare(event);
   if (!hit) {
     selected = null;
@@ -102,12 +153,24 @@ window.addEventListener("pointerdown", (event) => {
     return;
   }
   if (hit.kind === "move") {
-    game.move(hit.from, hit.to);
-    selected = null;
-    clearHighlights();
-    syncPieces();
+    const finish = (promo) => {
+      busy = false;
+      applyMove(hit.from, hit.to, promo);
+      selected = null;
+      clearHighlights();
+    };
+    if (needsPromotion(hit.from, hit.to)) {
+      busy = true;
+      showPromotionUI((label) => {
+        const map = { Queen: "q", Rook: "r", Bishop: "b", Knight: "n" };
+        finish(map[label] || "q");
+      });
+      return;
+    }
+    finish("q");
     return;
   }
+  if (vsAi && game.turn === "black") return;
   const piece = game.getPiece(hit.square);
   if (!piece || piece.color !== game.turn) return;
   selected = hit.square;
@@ -129,4 +192,4 @@ function animate() {
 }
 animate();
 
-window.__chess = game;
+window.__chess = () => game;
