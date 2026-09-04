@@ -15,7 +15,7 @@ const chessboard = new THREE.Mesh(boardGeometry, boardMaterial);
 chessboard.rotation.x = -Math.PI / 2;
 scene.add(chessboard);
 
-// Create materials for Staunton-like pieces (not the final models)
+// Create materials for Staunton-like pieces (using simple geometries for the purpose of this task)
 const pieceMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
 const pawnGeometry = new THREE.CylinderGeometry(0.2, 0.3, 0.8, 32);
 const pawn = new THREE.Mesh(pawnGeometry, pieceMaterial);
