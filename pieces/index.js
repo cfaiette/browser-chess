@@ -12,12 +12,14 @@ function makeLathe(profile, material, segments = 48) {
   return mesh;
 }
 
-function woodMaterial(color, roughness, metalness) {
-  return new THREE.MeshStandardMaterial({
+function woodMaterial(color, roughness, metalness, clearcoat = 0.2) {
+  return new THREE.MeshPhysicalMaterial({
     color,
     roughness,
     metalness,
-    envMapIntensity: 1.1,
+    clearcoat,
+    clearcoatRoughness: 0.42,
+    envMapIntensity: 1.15,
   });
 }
 
@@ -153,6 +155,7 @@ export function createPieceMesh(type, color) {
     color === "white" ? 0xf7f1e6 : 0x141416,
     color === "white" ? 0.22 : 0.36,
     color === "white" ? 0.28 : 0.2,
+    color === "white" ? 0.4 : 0.18,
   );
   if (type === "n") {
     const knight = makeKnight(material);
