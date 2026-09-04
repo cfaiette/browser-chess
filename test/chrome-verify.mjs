@@ -63,8 +63,13 @@ try {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(20000);
+  const consoleErrors = [];
+  page.on("pageerror", (err) => consoleErrors.push(String(err)));
+  page.on("console", (msg) => {
+    if (msg.type() === "error") consoleErrors.push(msg.text());
+  });
   await page.goto(base, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => typeof window.__chess === "function", null, { timeout: 20000 });
+  await page.waitForFunction(() => window.__ready === true, null, { timeout: 20000 });
   await page.waitForTimeout(900);
 
   const canvas = await page.locator("canvas").count();
@@ -77,6 +82,22 @@ try {
   report.checks.canvasPresent = canvas >= 1;
   report.checks.startingPieceCount = pieceCount;
   report.checks.fen = await page.evaluate(() => window.__chess().fen());
+  report.checks.fps = await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        let frames = 0;
+        const t0 = performance.now();
+        function tick(now) {
+          frames += 1;
+          if (now - t0 >= 1000) {
+            resolve(frames);
+            return;
+          }
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }),
+  );
 
   await shot(page, "start-position", report);
 
@@ -87,6 +108,10 @@ try {
   await page.evaluate(() => window.__setCamera(0, 14, 0.01));
   await page.waitForTimeout(200);
   await shot(page, "angle-top", report);
+
+  await page.evaluate(() => window.__flipCamera());
+  await page.waitForTimeout(250);
+  await shot(page, "camera-flip", report);
 
   await page.evaluate(() => window.__setVsAi(false));
   await page.evaluate(() => window.__setCamera(0, 9.5, 11.5));
@@ -104,12 +129,16 @@ try {
   await page.waitForTimeout(500);
   await shot(page, "after-capture", report);
 
+  report.checks.consoleErrors = consoleErrors;
+  report.checks.headlessNote = "FPS in headless Chromium is not comparable to interactive 60fps target";
   report.ok =
     report.checks.canvasPresent &&
     report.checks.startingPieceCount === 32 &&
     Boolean(moved?.ok) &&
     Boolean(capture?.white?.ok) &&
-    report.shots.length >= 5;
+    report.checks.fps >= 1 &&
+    consoleErrors.length === 0 &&
+    report.shots.length >= 6;
 
   await browser.close();
 } catch (err) {

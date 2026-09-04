@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { ChessRules } from "./chess/rules.js";
 import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh } from "./pieces/index.js";
+import { createCamera } from "./camera/index.js";
 import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound } from "./audio/moveCaptureAudio.js";
 import { showPromotionUI } from "./ui/promotionUI.js";
 import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
@@ -14,9 +14,6 @@ const app = document.getElementById("app");
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0b0e13);
 scene.fog = new THREE.Fog(0x0b0e13, 16, 34);
-
-const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 9.5, 11.5);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -28,13 +25,11 @@ renderer.toneMappingExposure = 1.2;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 app.appendChild(renderer.domElement);
 
+const cam = createCamera(renderer);
+const { camera, controls } = cam;
+
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 0.35, 0);
-controls.enableDamping = true;
-controls.maxPolarAngle = Math.PI * 0.48;
 
 scene.add(new THREE.HemisphereLight(0xf8f2e8, 0x1a120c, 0.45));
 const key = new THREE.DirectionalLight(0xfff1dc, 1.45);
@@ -246,10 +241,20 @@ window.addEventListener("pointerdown", (event) => {
 });
 
 window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+  cam.resize();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "f" || event.key === "F") cam.flip();
+  if (event.key === "Escape") {
+    selected = null;
+    clearHighlights();
+  }
+  if (event.key === "r" || event.key === "R") restart();
+});
+
+statusEl.title = "Keys: F flip camera · Esc clear · R restart";
 
 syncPieces();
 
@@ -268,7 +273,7 @@ function animate() {
       done();
     }
   }
-  controls.update();
+  cam.update();
   renderer.render(scene, camera);
 }
 animate();
@@ -279,9 +284,9 @@ window.__applyMove = (from, to, promotion = "q") => applyMove(from, to, promotio
 window.__setVsAi = (enabled) => {
   vsAiFlag.enabled = Boolean(enabled);
 };
+window.__flipCamera = () => cam.flip();
 window.__setCamera = (x, y, z, tx = 0, ty = 0.35, tz = 0) => {
-  camera.position.set(x, y, z);
-  controls.target.set(tx, ty, tz);
-  controls.update();
+  cam.setView(x, y, z, tx, ty, tz);
   renderer.render(scene, camera);
 };
+window.__ready = true;

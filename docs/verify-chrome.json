@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "startedAt": "2026-09-04T07:55:32.134Z",
+  "startedAt": "2026-09-04T08:03:23.528Z",
   "shots": [
     {
       "name": "start-position",
@@ -15,6 +15,10 @@
       "path": "docs/screenshots/angle-top.png"
     },
     {
+      "name": "camera-flip",
+      "path": "docs/screenshots/camera-flip.png"
+    },
+    {
       "name": "after-e2e4",
       "path": "docs/screenshots/after-e2e4.png"
     },
@@ -27,6 +31,7 @@
     "canvasPresent": true,
     "startingPieceCount": 32,
     "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    "fps": 3,
     "e2e4": {
       "ok": true,
       "check": false,
@@ -49,8 +54,10 @@
         "stalemate": false,
         "captured": true
       }
-    }
+    },
+    "consoleErrors": [],
+    "headlessNote": "FPS in headless Chromium is not comparable to interactive 60fps target"
   },
   "errors": [],
-  "finishedAt": "2026-09-04T07:56:19.622Z"
+  "finishedAt": "2026-09-04T08:04:24.460Z"
 }
