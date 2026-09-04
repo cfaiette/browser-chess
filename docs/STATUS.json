@@ -8,31 +8,33 @@
   "critic_scores": {
     "chess_rules": 8.0,
     "board_pieces_visual": 7.6,
-    "interaction": 7.2,
+    "interaction": 7.8,
     "audio": 6.8,
-    "ai": 7.2,
+    "ai": 7.5,
     "verification_harness": 7.5,
-    "overall": 7.5
+    "overall": 7.6
   },
   "pass_threshold": 8.5,
   "weakest_module": "audio",
   "failures": [
-    "Overall critic score 7.5 < 8.5 pass bar",
+    "Overall critic score 7.6 < 8.5 pass bar",
     "Still short of luxury photography / scanned Staunton PBR assets",
     "Audio is designed procedural palette, not sampled SFX pack",
-    "Opening book is small; search still shallow (depth 2)",
-    "GitHub push/PR blocked without gh auth"
+    "GitHub push/PR blocked: gh not logged in; SSH publickey denied"
   ],
   "open_issues": [
     "Scanned/PBR Staunton meshes",
-    "Larger opening book + deeper search",
     "Sampled sound pack",
-    "Authenticate gh and publish real PR on cfaiette/browser-chess"
+    "Authenticate gh (or authorize SSH key) and publish real PR on cfaiette/browser-chess"
   ],
   "verification": {
     "npm_test": "pass",
     "npm_build": "pass",
     "verify_chrome": "pass",
     "report": "docs/verify-chrome.json"
+  },
+  "auth_blockers": {
+    "gh": "not logged in",
+    "ssh": "Permission denied (publickey)"
   }
 }
