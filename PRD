@@ -1,0 +1,26 @@
+# Goal
+
+Build a premium 3D chess game in Three.js (latest release) + Vite, plain ES modules, from this empty folder. The bar is AAA: beautiful Staunton pieces, realistic PBR materials, physically plausible lighting/shadows, smooth camera movement, polished animations, strong sound design, and flawless chess rules. Never programmer art.
+
+# How to work
+
+1. Architecture first. Before any feature code, write ARCHITECTURE.md: one folder per subsystem (chess rules, board, pieces, rendering, camera, interaction, animation, effects, AI, UI, audio), a shared game-state model, the public API each module must expose, the events it emits, board/world coordinate conventions, determinism, a performance budget (≥60 fps at 1080p), and an asset policy. Keep chess state authoritative and rendering purely visual. Isolate module failures so one broken optional module never takes the game down.
+
+2. Build the verification loop before the game. A headless-Chrome test tool loads the app, waits until ready, loads predefined FEN positions, executes moves, sets camera presets, and writes PNG + JSON logs (console errors, fps, draw calls, chess state). Every module also ships a showcase mode that stages a representative scene of just that module. No agent may claim anything it hasn't run, screenshotted, and inspected.
+
+3. Fan out. Use multi-agent orchestration ("ultracode"). One builder agent per module, each owning only its folder. Run in waves ordered by dependency: (1) chess engine, board, rendering, camera, UI, audio; (2) pieces, interaction, animation, effects, AI; (3) complete playable game. Between waves, one integrator agent, the only one allowed to touch core, applies builders' core-change requests and fixes the seams.
+
+4. Gauntlet every module. After each builder round, a separate critic agent, a brutal AAA game director who writes no code, takes its own screenshots at several camera angles and zoom levels, checks the API contract, console errors, chess correctness, and performance, and scores 0–10 against premium chess games and real luxury chess photography: 10 = exceptional AAA, 8.5 = commercially shippable with nits, 7 = good indie, 5 = programmer art. Pass = ≥8.5 with zero errors and all chess-rule tests passing. Below that, the builder gets the ranked issue list and goes again, up to 4 rounds.
+
+5. Final gate. A whole-game critic plays complete games and tests normal moves, captures, check, checkmate, stalemate, castling, en passant, promotion, illegal moves, AI play, camera flipping, restart, and game-over states. Then blind judges get pairs of screenshots labelled only A and B, ours vs. premium chess references, order shuffled, and say which looks better and why.
+
+6. /loop until every critic passes. Persist scores, failing chess tests, performance data, and open issues to docs/STATUS.json so each iteration resumes from the weakest module, not from scratch.
+
+# Rules
+
+* Never inflate scores. Report real numbers, failed rounds, broken rules, and what is still missing.
+* Never edit another module's folder. Core changes go through the integrator.
+* Keep the dev server running and the game playable at all times; other agents are testing and screenshotting it.
+* Never claim chess behavior works without testing it.
+* Never use placeholder cubes or crude primitives as final chess pieces.
+* Do not ask me questions. Make routine decisions yourself, state assumptions, keep going.
