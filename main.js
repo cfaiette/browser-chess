@@ -6,7 +6,7 @@ import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh, loadPieceLibrary } from "./pieces/index.js";
 import { createCamera } from "./camera/index.js";
 import { createEffectsLayer } from "./effects/index.js";
-import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound, playMateSound } from "./audio/moveCaptureAudio.js";
+import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound, playMateSound, ensureAmbience } from "./audio/moveCaptureAudio.js";
 import { showPromotionUI } from "./ui/promotionUI.js";
 import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
 import { showRestartOverlay } from "./ui/restartOverlay.js";
@@ -227,6 +227,7 @@ function pickSquare(event) {
 }
 
 window.addEventListener("pointerdown", (event) => {
+  ensureAmbience();
   if (busy) return;
   const hit = pickSquare(event);
   if (!hit) {

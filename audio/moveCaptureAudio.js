@@ -88,9 +88,40 @@ export function renderIllegal(sampleRate) {
   return data;
 }
 
+let master = null;
+
+function bus() {
+  const audio = ctx();
+  if (!audio) return null;
+  if (master) return master;
+  const input = audio.createGain();
+  const dry = audio.createGain();
+  const wet = audio.createGain();
+  const delay = audio.createDelay(0.3);
+  const feedback = audio.createGain();
+  const tone = audio.createBiquadFilter();
+  dry.gain.value = 0.92;
+  wet.gain.value = 0.18;
+  delay.delayTime.value = 0.045;
+  feedback.gain.value = 0.22;
+  tone.type = "lowpass";
+  tone.frequency.value = 2800;
+  input.connect(dry);
+  dry.connect(audio.destination);
+  input.connect(delay);
+  delay.connect(tone);
+  tone.connect(wet);
+  wet.connect(audio.destination);
+  tone.connect(feedback);
+  feedback.connect(delay);
+  master = input;
+  return master;
+}
+
 function playBuffer(data, gain = 0.7, pan = 0) {
   const audio = ctx();
   if (!audio) return;
+  const out = bus();
   const buffer = audio.createBuffer(1, data.length, audio.sampleRate);
   buffer.copyToChannel(data, 0);
   const src = audio.createBufferSource();
@@ -105,7 +136,40 @@ function playBuffer(data, gain = 0.7, pan = 0) {
   src.connect(filter);
   filter.connect(panner);
   panner.connect(g);
-  g.connect(audio.destination);
+  g.connect(out || audio.destination);
+  src.start();
+}
+
+let ambienceStarted = false;
+
+export function ensureAmbience() {
+  if (ambienceStarted) return;
+  const audio = ctx();
+  if (!audio) return;
+  ambienceStarted = true;
+  const out = bus();
+  const frames = audio.sampleRate * 4;
+  const buffer = audio.createBuffer(2, frames, audio.sampleRate);
+  for (let ch = 0; ch < 2; ch += 1) {
+    const data = buffer.getChannelData(ch);
+    for (let i = 0; i < frames; i += 1) {
+      const t = i / audio.sampleRate;
+      data[i] =
+        Math.sin(2 * Math.PI * (48 + ch) * t) * 0.008 +
+        Math.sin(2 * Math.PI * (72 + ch * 2) * t) * 0.005;
+    }
+  }
+  const src = audio.createBufferSource();
+  const g = audio.createGain();
+  const filter = audio.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 180;
+  src.buffer = buffer;
+  src.loop = true;
+  g.gain.value = 0.35;
+  src.connect(filter);
+  filter.connect(g);
+  g.connect(out || audio.destination);
   src.start();
 }
 
