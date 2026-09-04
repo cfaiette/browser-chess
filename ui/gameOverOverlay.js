@@ -1,7 +1,6 @@
-// Game Over Overlay Component
-
-export function showGameOver(winner) {
-  const overlay = document.getElementById('game-over-overlay');
-  overlay.style.display = 'block';
-  overlay.innerHTML = winner ? `${winner} wins!` : 'Stalemate!';
+export function showGameOverOverlay(message) {
+    const overlay = document.createElement('div');
+    overlay.id = 'gameOverOverlay';
+    overlay.innerHTML = `<h2>${message}</h2>`;
+    document.body.appendChild(overlay);
 }

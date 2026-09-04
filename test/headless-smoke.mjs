@@ -2,9 +2,11 @@ import { ChessRules } from '../chess/rules.js';
 import { writeFileSync } from 'fs';
 
 const verifyLastFile = 'docs/verify-last.json';
+
+// Add more FEN positions as needed
 const testPositions = [
     "rnbqkb1r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    // Add more FEN positions as needed
+    "rnbqkb1r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"  // Example additional position
 ];
 
 let results = [];
