@@ -9,31 +9,30 @@
     "chess_rules": 8.0,
     "board_pieces_visual": 7.0,
     "interaction": 7.0,
-    "audio": 6.0,
-    "ai": 6.5,
+    "audio": 6.8,
+    "ai": 7.2,
     "verification_harness": 7.5,
-    "overall": 7.2
+    "overall": 7.4
   },
   "pass_threshold": 8.5,
   "weakest_module": "audio",
   "failures": [
-    "Overall critic score 7.2 < 8.5 pass bar",
+    "Overall critic score 7.4 < 8.5 pass bar",
     "Piece visuals still below luxury photography / AAA PBR bar",
-    "Audio is richer procedural SFX, not a designed sound pack",
-    "AI is depth-2 material search without opening book",
+    "Audio is designed procedural palette, not sampled SFX pack",
+    "Opening book is small; search still shallow (depth 2)",
     "GitHub push/PR blocked without gh auth"
   ],
   "open_issues": [
     "Staunton mesh/PBR fidelity",
-    "Opening book + deeper search",
-    "Designed sound pack / samples",
+    "Larger opening book + deeper search",
+    "Sampled sound pack",
     "Authenticate gh and publish real PR on cfaiette/browser-chess"
   ],
   "verification": {
     "npm_test": "pass",
     "npm_build": "pass",
     "verify_chrome": "pass",
-    "report": "docs/verify-chrome.json",
-    "screenshots": ["docs/screenshots/start-position.png", "docs/screenshots/after-e2e4.png"]
+    "report": "docs/verify-chrome.json"
   }
 }

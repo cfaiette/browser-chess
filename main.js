@@ -4,7 +4,7 @@ import { ChessRules } from "./chess/rules.js";
 import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh } from "./pieces/index.js";
-import { playMoveSound, playCaptureSound, playCheckSound } from "./audio/moveCaptureAudio.js";
+import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound } from "./audio/moveCaptureAudio.js";
 import { showPromotionUI } from "./ui/promotionUI.js";
 import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
 import { showRestartOverlay } from "./ui/restartOverlay.js";
@@ -107,9 +107,14 @@ function needsPromotion(from, to) {
 
 function applyMove(from, to, promotion = "q") {
   const before = game.getPiece(to);
+  const mover = game.getPiece(from);
   const result = game.move(from, to, promotion);
   if (!result.ok) return result;
+  const isCastle = mover?.type === "k" && Math.abs(from.charCodeAt(0) - to.charCodeAt(0)) === 2;
+  const isPromote = mover?.type === "p" && (to[1] === "8" || to[1] === "1");
   if (before) playCaptureSound();
+  else if (isCastle) playCastleSound();
+  else if (isPromote) playPromoteSound();
   else playMoveSound();
   if (result.check || result.checkmate) playCheckSound();
   syncPieces();
