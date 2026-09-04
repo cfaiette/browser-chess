@@ -5,6 +5,7 @@ import { SimpleAI } from "./chess/ai.js";
 import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh } from "./pieces/index.js";
 import { createCamera } from "./camera/index.js";
+import { createEffectsLayer } from "./effects/index.js";
 import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound, playMateSound } from "./audio/moveCaptureAudio.js";
 import { showPromotionUI } from "./ui/promotionUI.js";
 import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
@@ -54,6 +55,8 @@ table.receiveShadow = true;
 scene.add(table);
 
 createBoard(scene);
+const effects = createEffectsLayer();
+scene.add(effects.root);
 let game = new ChessRules();
 const ai = new SimpleAI(game);
 const pieces = new THREE.Group();
@@ -73,6 +76,18 @@ scene.add(highlights);
 const selection = new THREE.Group();
 scene.add(selection);
 
+function kingSquare(color) {
+  for (let rank = 0; rank < 8; rank += 1) {
+    for (let file = 0; file < 8; file += 1) {
+      const piece = game.board[rank][file];
+      if (piece?.type === "k" && piece.color === color) {
+        return `${String.fromCharCode(97 + file)}${rank + 1}`;
+      }
+    }
+  }
+  return null;
+}
+
 function syncPieces() {
   pieces.clear();
   for (let rank = 0; rank < 8; rank += 1) {
@@ -87,6 +102,7 @@ function syncPieces() {
       pieces.add(mesh);
     }
   }
+  if (game.inCheck()) effects.showCheck(kingSquare(game.turn));
   statusEl.textContent = `${game.turn} to move · ${game.fen()}`;
 }
 
@@ -156,6 +172,7 @@ function applyMove(from, to, promotion = "q") {
   else if (result.check) playCheckSound();
   clearHighlights();
   selected = null;
+  effects.showLastMove(from, to);
   if (movingMesh) {
     busy = true;
     anim = {
@@ -189,6 +206,7 @@ function restart() {
   ai.chess = game;
   selected = null;
   clearHighlights();
+  effects.clear();
   syncPieces();
 }
 
