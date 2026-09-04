@@ -13,7 +13,7 @@ import './audio';
 
 const appDiv = document.getElementById('app');
 if (appDiv) {
-  appDiv.innerHTML = '<h1>Browser Chess (AAA 3D) – ARCHITECTURE STUB</h1>';
+  appDiv.innerHTML = '<h1>Browser Chess (AAA 3D)</h1>';
 }
 
 // Minimal startup; each subsystem is responsible for its own init/showcase

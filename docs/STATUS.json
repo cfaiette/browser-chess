@@ -1,7 +1,5 @@
 {
-  "modules": {},
-  "last_update": null,
-  "gauntlet": [],
-  "open_issues": [],
+  "critic_scores": [],
+  "failures": [],
   "weakest_module": null
 }
