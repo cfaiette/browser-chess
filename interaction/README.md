@@ -1,5 +1,5 @@
-# interaction module
+# interaction/
 
-Mouse and touch input, picking, move selection, drag/drop, clickable logic.
-- Exports: `init`, `on`, `off`, `showcase`, `destroy`.
-- Works from visual state, not game logic.
+Raycast picking over piece/move meshes. Emits `interaction:pick`.
+
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`, `pickFromEvent`.

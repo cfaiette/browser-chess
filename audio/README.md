@@ -1,8 +1,6 @@
-# Audio
+# audio/
 
-This module handles audio for the chess game, including move and capture sounds.
+Procedural wood/thud/chime SFX with stereo pan, ambient bed, short reverb bus.
 
-## Features
-- Basic move sound using WebAudio oscillators.
-- Capture sound effects.
-- More advanced sound design planned for future versions.
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`.
+Also re-exports `playMoveSound`, `playCaptureSound`, etc. from `moveCaptureAudio.js`.

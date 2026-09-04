@@ -1,4 +1,5 @@
-# ui module
+# ui/
 
-All 2D overlays, move history, timers, dialogs, settings, main menu.
-- Never owns chess or scene state; always a consumer.
+HTML overlays: promotion chooser, game-over banner, restart.
+
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`.

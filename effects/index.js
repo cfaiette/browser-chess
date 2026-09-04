@@ -34,3 +34,31 @@ export function createEffectsLayer() {
 
   return { root, clear, showLastMove, showCheck };
 }
+
+const listeners = new Map();
+
+export function init(config = {}) {
+  const layer = createEffectsLayer();
+  if (config.scene) config.scene.add(layer.root);
+  return layer;
+}
+
+export function showcase(container) {
+  if (container) container.textContent = "effects: last-move + check rings";
+}
+
+export function update() {}
+
+export function on(event, handler) {
+  const key = event.includes(":") ? event : `effects:${event}`;
+  if (!listeners.has(key)) listeners.set(key, new Set());
+  listeners.get(key).add(handler);
+}
+
+export function off(event, handler) {
+  listeners.get(event.includes(":") ? event : `effects:${event}`)?.delete(handler);
+}
+
+export function destroy() {
+  listeners.clear();
+}

@@ -1,5 +1,6 @@
-# board module
+# board/
 
-3D chessboard: mesh, PBR materials, notation rendering.
-- Coordinates as per Y-up, [file, rank] 0-based grid, origin at A1.
-- No game logic, draws visual only.
+3D chessboard: wood-grain PBR tiles, rim, file/rank labels.
+
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`.
+Also exports `createBoard(scene)` and `squareToWorld(square)` (A1 origin, Y-up).

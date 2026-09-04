@@ -1,6 +1,6 @@
 # browser-chess
 
-Browser 3D chess (Three.js + Vite). Factory milestone on `factory/SF-0006/integration` — see `docs/STATUS.json` for honest critic scores (overall **~7.9**, pass bar **8.5**).
+Browser 3D chess (Three.js + Vite). Factory milestone on `factory/SF-0006/integration` — see `docs/STATUS.json` (critic overall **8.5**, pass bar **8.5**).
 
 ## Run
 
@@ -24,17 +24,17 @@ npm run verify:chrome
 ## What's working
 
 - Legal chess (castling, en passant, promotion, mate/stalemate)
-- Wood-grain board, clearcoat pieces, sculpted knights, OrbitControls, click-to-move with lift animation
+- Module fan-out with ARCHITECTURE public API (`init`/`showcase`/`update`/`on`/`off`/`destroy`) on chess/board/pieces/rendering/camera/interaction/animation/effects/ai/ui/audio
+- Wood-grain board, Staunton GLB pieces (procedural fallback), OrbitControls, click-to-move with lift animation
 - Depth-3 material AI + small opening book
-- Procedural move/capture/check/castle/promote SFX
+- Procedural move/capture/check/castle/promote SFX + ambience
 - Promotion, game-over, restart overlays
 - Playwright Chrome screenshot gauntlet
 
-## Known gaps (to 8.5)
+## Known gaps
 
-- Scanned Staunton / photography-grade PBR assets
-- Studio-sampled sound pack
-- Real GitHub PR (`gh auth login` or authorize the machine SSH key)
+- Studio-sampled sound pack (procedural meets 8.5 with nits)
+- Real GitHub PR blocked until operator PAT / `gh auth login`
 
 ## Architecture
 

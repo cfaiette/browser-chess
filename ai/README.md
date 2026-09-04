@@ -1,4 +1,5 @@
-# ai module
+# ai/
 
-Includes move search, evaluation, pluggable difficulty, hint/movegen API.
-- Never alters chess state directly (suggests moves only).
+Pluggable engine facade over `chess/ai.js` SimpleAI. Suggests moves only — never mutates chess state itself beyond calling into a provided game.
+
+Public API: `init({ chess })`, `showcase`, `update`, `on`, `off`, `destroy`, `suggestMove`.

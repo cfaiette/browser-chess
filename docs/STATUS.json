@@ -24,6 +24,11 @@
     "Paste PAT in Factory Settings (http://127.0.0.1:4173/settings) or run gh auth login",
     "Optional: replace procedural SFX with sampled pack"
   ],
+  "module_fan_out": {
+    "contract": "init/showcase/update/on/off/destroy",
+    "modules": ["chess", "board", "pieces", "rendering", "camera", "interaction", "animation", "effects", "ai", "ui", "audio"],
+    "test": "test/moduleApi.test.js"
+  },
   "assets": {
     "pieces": "public/assets/pieces-staunton.glb",
     "license": "CC-BY-4.0 Khronos A Beautiful Game (simplified/stripped board)"

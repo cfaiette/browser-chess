@@ -138,3 +138,35 @@ export function createPieceMesh(type, color) {
 export function piecesReady() {
   return Boolean(templates);
 }
+
+const listeners = new Map();
+
+export function init() {
+  return loadPieceLibrary();
+}
+
+export function showcase(container) {
+  if (container) {
+    container.textContent = templates
+      ? "pieces: Khronos Staunton GLB (CC BY 4.0) with procedural fallback"
+      : "pieces: procedural lathe Staunton (GLB pending/hot-swap)";
+  }
+}
+
+export function update() {}
+
+export function on(event, handler) {
+  const key = event.includes(":") ? event : `pieces:${event}`;
+  if (!listeners.has(key)) listeners.set(key, new Set());
+  listeners.get(key).add(handler);
+}
+
+export function off(event, handler) {
+  listeners.get(event.includes(":") ? event : `pieces:${event}`)?.delete(handler);
+}
+
+export function destroy() {
+  templates = null;
+  loadPromise = null;
+  listeners.clear();
+}

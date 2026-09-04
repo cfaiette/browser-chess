@@ -1,5 +1,6 @@
-# pieces module
+# pieces/
 
-All 3D Staunton chess pieces: final models only! Includes all mesh/materials code, instancing optimizations.
-- Exports: `init`, `showcase`, `update`, `destroy`, etc.
-- No game logic, receives authoritative state only.
+Staunton meshes from Khronos A Beautiful Game GLB (`public/assets/pieces-staunton.glb`, CC BY 4.0) with procedural lathe fallback.
+
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`.
+Also: `loadPieceLibrary()`, `createPieceMesh(type, color)`, `piecesReady()`.

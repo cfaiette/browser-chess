@@ -1,4 +1,6 @@
-# effects module
+# effects/
 
-Lighting, PBR enhancements, special effects (win/capture/gameover), shadows, particles.
-- All visual, driven by gamestate+events.
+Last-move and check highlight rings on the board plane.
+
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`.
+Also: `createEffectsLayer()`.

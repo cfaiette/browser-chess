@@ -1,4 +1,6 @@
-# camera module
+# camera/
 
-Camera control (player/cinematic), interpolation for smooth movement.
-- Exports: `init`, `showcase`, `update`, `on`, `off`, `destroy`.
+OrbitControls camera with flip (white/black seat) and preset `setView`.
+
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`.
+Also: `createCamera(renderer)`.

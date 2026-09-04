@@ -112,3 +112,29 @@ export function squareToWorld(square) {
   const rank = Number(square[1]) - 1;
   return new THREE.Vector3(file - 3.5, 0.08, rank - 3.5);
 }
+
+const listeners = new Map();
+
+export function init(config = {}) {
+  return { root: createBoard(config.scene) };
+}
+
+export function showcase(container) {
+  if (container) container.textContent = "board: wood-grain PBR tiles + file/rank labels";
+}
+
+export function update() {}
+
+export function on(event, handler) {
+  const key = event.includes(":") ? event : `board:${event}`;
+  if (!listeners.has(key)) listeners.set(key, new Set());
+  listeners.get(key).add(handler);
+}
+
+export function off(event, handler) {
+  listeners.get(event.includes(":") ? event : `board:${event}`)?.delete(handler);
+}
+
+export function destroy() {
+  listeners.clear();
+}

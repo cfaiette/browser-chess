@@ -6,6 +6,8 @@ import { createBoard, squareToWorld } from "./board/index.js";
 import { createPieceMesh, loadPieceLibrary } from "./pieces/index.js";
 import { createCamera } from "./camera/index.js";
 import { createEffectsLayer } from "./effects/index.js";
+import { liftMove, update as updateAnim, isBusy as animBusy } from "./animation/index.js";
+import { pickFromEvent } from "./interaction/index.js";
 import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound, playPromoteSound, playMateSound, ensureAmbience } from "./audio/moveCaptureAudio.js";
 import { showPromotionUI } from "./ui/promotionUI.js";
 import { showGameOverOverlay } from "./ui/gameOverOverlay.js";
@@ -70,7 +72,6 @@ document.body.appendChild(statusEl);
 const vsAiFlag = { enabled: true };
 let selected = null;
 let busy = false;
-let anim = null;
 const highlights = new THREE.Group();
 scene.add(highlights);
 const selection = new THREE.Group();
@@ -175,16 +176,9 @@ function applyMove(from, to, promotion = "q") {
   effects.showLastMove(from, to);
   if (movingMesh) {
     busy = true;
-    anim = {
-      mesh: movingMesh,
-      x0: fromPos.x,
-      z0: fromPos.z,
-      x1: toPos.x,
-      z1: toPos.z,
-      t: 0,
-      dur: 0.22,
+    liftMove(movingMesh, fromPos, toPos, {
       after: () => finishAfterMove(result),
-    };
+    });
   } else {
     finishAfterMove(result);
   }
@@ -192,7 +186,7 @@ function applyMove(from, to, promotion = "q") {
 }
 
 function runAi() {
-  if (busy || game.turn !== "black") return;
+  if (busy || animBusy() || game.turn !== "black") return;
   const move = ai.makeMove();
   if (!move) return;
   applyMove(move.from, move.to, "q");
@@ -210,25 +204,13 @@ function restart() {
   syncPieces();
 }
 
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
-
 function pickSquare(event) {
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(pointer, camera);
-  const hits = raycaster.intersectObjects([...pieces.children, ...highlights.children], true);
-  if (!hits.length) return null;
-  let obj = hits[0].object;
-  while (obj && !obj.userData?.square && !obj.userData?.to && obj.parent) obj = obj.parent;
-  if (obj.userData.to) return { kind: "move", ...obj.userData };
-  if (obj.userData.square) return { kind: "piece", square: obj.userData.square };
-  return null;
+  return pickFromEvent(event, camera, [...pieces.children, ...highlights.children]);
 }
 
 window.addEventListener("pointerdown", (event) => {
   ensureAmbience();
-  if (busy) return;
+  if (busy || animBusy()) return;
   const hit = pickSquare(event);
   if (!hit) {
     selected = null;
@@ -280,19 +262,7 @@ syncPieces();
 
 function animate() {
   requestAnimationFrame(animate);
-  if (anim) {
-    anim.t += 1 / 60;
-    const u = Math.min(1, anim.t / anim.dur);
-    const e = 1 - (1 - u) ** 3;
-    anim.mesh.position.x = anim.x0 + (anim.x1 - anim.x0) * e;
-    anim.mesh.position.z = anim.z0 + (anim.z1 - anim.z0) * e;
-    anim.mesh.position.y = 0.06 + Math.sin(Math.PI * e) * 0.35;
-    if (u >= 1) {
-      const done = anim.after;
-      anim = null;
-      done();
-    }
-  }
+  updateAnim(1 / 60);
   cam.update();
   renderer.render(scene, camera);
 }

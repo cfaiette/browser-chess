@@ -1,5 +1,5 @@
-# animation module
+# animation/
 
-Piece, board, and camera animation system, transitions, event-driven.
-- All animation visual-only & driven by state/events from chess+interaction+camera.
-- Exports: `init`, `showcase`, `update`, `on`, `off`, `destroy`.
+Visual-only piece lift tween (cubic ease, ~0.22s). Emits `animation:started` / `animation:finished`.
+
+Public API: `init`, `showcase`, `update`, `on`, `off`, `destroy`, `liftMove`, `isBusy`.

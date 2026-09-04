@@ -7,7 +7,7 @@ Date: 2026-09-04. Evidence from current tree — not claimed complete.
 | Clone at `repositories/browser-chess/source` | Repo present, remote `https://github.com/cfaiette/browser-chess.git` | Met |
 | ARCHITECTURE.md first | `ARCHITECTURE.md` present | Met |
 | Verification loop (Chrome PNG+JSON) | `npm run verify:chrome` → `docs/verify-chrome.json` + 6 PNGs | Met |
-| Module fan-out folders | chess/board/pieces/camera/effects/audio/ui/test/docs present; some READMEs still stubs | Partial |
+| Module fan-out folders | Each subsystem has `index.js` with `init/showcase/update/on/off/destroy`; `test/moduleApi.test.js` green | Met |
 | Critic ≥ 8.5 | `docs/STATUS.json` overall **8.5** | Met (honest scores) |
 | Final gate / playable game | Rules+AI+UI+SFX+Staunton GLB; tests+build green | Met with nits |
 | `docs/STATUS.json` | Present, updated | Met |

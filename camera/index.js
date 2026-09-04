@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { createBus } from "../lib/bus.js";
+
+const bus = createBus("camera");
 
 export function createCamera(renderer, target = new THREE.Vector3(0, 0.35, 0)) {
   const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -35,5 +38,37 @@ export function createCamera(renderer, target = new THREE.Vector3(0, 0.35, 0)) {
     showcase(container) {
       if (container) container.textContent = "camera: orbit + flip";
     },
+    on(event, handler) {
+      return bus.on(event, handler);
+    },
+    off(event, handler) {
+      return bus.off(event, handler);
+    },
+    destroy() {
+      controls.dispose();
+      bus.clear();
+    },
   };
+}
+
+export function init(config = {}) {
+  return createCamera(config.renderer, config.target);
+}
+
+export function showcase(container) {
+  if (container) container.textContent = "camera: orbit + flip (F)";
+}
+
+export function update() {}
+
+export function on(event, handler) {
+  return bus.on(event, handler);
+}
+
+export function off(event, handler) {
+  return bus.off(event, handler);
+}
+
+export function destroy() {
+  bus.clear();
 }
