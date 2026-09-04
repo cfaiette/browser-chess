@@ -1,17 +1,6 @@
-import { defineConfig } from 'vite';
-import { createHtmlPlugin } from 'vite-plugin-html';
+import { defineConfig } from "vite";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [createHtmlPlugin({
-        inject: {
-            injectHtml: true,
-        }
-    })],
-    server: {
-        port: 3000,
-    },
-    build: {
-        target: 'esnext',
-    }
+  server: { port: 4175, host: "127.0.0.1" },
+  build: { target: "esnext" },
 });
